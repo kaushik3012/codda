@@ -129,7 +129,7 @@ def reconstruct_field_arbitrary_resolution(block_copulas, original_shape, target
     return S
 
 
-def load_copula_binary(file_name, marginal_types_reverse_map):
+def load_copula_binary(file_name, marginal_types_reverse_map, var_names):
     """
     Load copula parameters from a binary file and reconstruct the copula objects.
     
@@ -212,9 +212,6 @@ def load_copula_binary(file_name, marginal_types_reverse_map):
 
             copula_params["univariates"] = univariates
             # copula_params['columns'] = [f"var_{i}" for i in range(num_vars)[:-3]] + ["x", "y", "z"]
-            model_file_name = os.path.basename(file_name)
-            model_file_split = model_file_name.split(".")[0].split("_")
-            var_names = model_file_split[1:-1]
             copula_params['columns'] = var_names + ["x", "y", "z"]
             copula_params['type'] = 'copulas.multivariate.GaussianMultivariate'
             copula_structures.append(copula_params)
@@ -228,7 +225,6 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Script to reconstruct data from Copula Models.")
     parser.add_argument("--n_samples", type=int, default=500, help="Number of samples to generate.")
     parser.add_argument("--target_shape", type=int, nargs=3, default=(250, 250, 50), help="Target shape for reconstruction (Tx, Ty, Tz).")
-    # parser.add_argument("--var_names", type=str, nargs='+', default=["Pressure", "Temperature", "Velocity"], help="Variable names to reconstruct.")
     parser.add_argument("--vars", type=str, nargs='+', default=None, help="Variable names to reconstruct.")
     parser.add_argument("--model_path", type=str, help="Path to the copula model file.", required=True)
     args = parser.parse_args()
@@ -242,7 +238,7 @@ if __name__ == "__main__":
     # Get the variable names from the model file name
     model_file_name = os.path.basename(args.model_path)
     model_file_split = model_file_name.split(".")[0].split("_")
-    var_names = model_file_split[1:-1]
+    var_names = model_file_split[1:-2]
     scalar_vars = args.vars
     if scalar_vars is None:
         scalar_vars = var_names
@@ -250,7 +246,7 @@ if __name__ == "__main__":
         raise ValueError(f"Variable names provided do not exist in the model file: {args.vars}. Expected Choices: {var_names}.")
         
     # Load copulas from file
-    copula_data, dims, num_vars = load_copula_binary(args.model_path, marginal_types_reverse_map)
+    copula_data, dims, num_vars = load_copula_binary(args.model_path, marginal_types_reverse_map, var_names)
 
     copula_list = []
     # Print reconstructed copula structures
@@ -266,12 +262,17 @@ if __name__ == "__main__":
 
     # Save the reconstructed fields to VTI files
     # Create a directory to save the files
-    model_name =model_file_split[-1]
+    model_name =model_file_split[-2]
     if not os.path.isdir("reconstructed_fields"):
         os.mkdir("reconstructed_fields")    
     save_path = "reconstructed_fields/"+model_name
     if not os.path.isdir(save_path):
         os.mkdir(save_path)
+
+    block_size = model_file_split[-1]
+    if not os.path.isdir(save_path+"/"+block_size):
+        os.mkdir(save_path+"/"+block_size)
+    save_path = save_path+"/"+block_size
 
     # Define the spacing for the VTI files
     spacing = (1.0, 1.0, 1.0)

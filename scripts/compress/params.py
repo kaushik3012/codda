@@ -23,23 +23,25 @@ file_paths = {
 # (B) Specify marginal distributions for each variable.
 # You can change these to other univariate distributions if desired.
 marginal_distributions = {
-    "P": Histogram,  
-    "TC": Histogram,
-    "Velocity": Histogram,
-    "CLOUD": Histogram,
-    "PRECIP": Histogram,
-    "QCLOUD": Histogram,
-    "QGRAUP": Histogram,
-    "QICE": Histogram,
-    "QRAIN": Histogram,
-    "QSNOW": Histogram,
-    "QVAPOR": Histogram,
-    "U": Histogram,
-    "V": Histogram,
-    "W": Histogram,
+    "P": StudentTUnivariate,  
+    "TC": StudentTUnivariate,
+    "Velocity": StudentTUnivariate,
+    "CLOUD": StudentTUnivariate,
+    "PRECIP": StudentTUnivariate,
+    "QCLOUD": StudentTUnivariate,
+    "QGRAUP": StudentTUnivariate,
+    "QICE": StudentTUnivariate,
+    "QRAIN": StudentTUnivariate,
+    "QSNOW": StudentTUnivariate,
+    "QVAPOR": StudentTUnivariate,
+    "U": StudentTUnivariate,
+    "V": StudentTUnivariate,
+    "W": StudentTUnivariate,
     "x": UniformUnivariate,
     "y": UniformUnivariate,
     "z": UniformUnivariate
 }
 
-block_size = 5
+block_size = 10
+
+copula_type = "GaussianMultivariate"  # or "IndependentMultivariate"

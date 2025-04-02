@@ -8,7 +8,6 @@ import struct
 import os
 from .utils import read_vti_files
 
-
 ###############################################################################
 # 2. DIVIDE INTO BLOCKS (USING THE GRID FROM ONE OF THE VARIABLES)
 ###############################################################################
@@ -31,7 +30,7 @@ def divide_into_blocks(array, block_size):
 ###############################################################################
 # 3. FIT A COPULA MODEL FOR EACH BLOCK (MULTIVARIABLE VERSION WITH MARGINALS)
 ###############################################################################
-def create_copula_model_multivariable(block_vars, x0, y0, z0, marginal_distributions):
+def create_copula_model_multivariable(block_vars, x0, y0, z0, marginal_distributions, copula_type="GaussianMultivariate"):
     """
     block_vars: dictionary mapping each scalar variable name to its 3D block 
                 (shape: (block_size, block_size, block_size)).
@@ -83,8 +82,18 @@ def create_copula_model_multivariable(block_vars, x0, y0, z0, marginal_distribut
     distribution['y'] = marginal_distributions.get('y', UniformUnivariate)
     distribution['z'] = marginal_distributions.get('z', UniformUnivariate)
 
-    copula = GaussianMultivariate(distribution=distribution)
-    copula.fit(df)
+    num_vars = len(block_vars)
+
+    if copula_type == "IndependentMultivariate":
+        copula = GaussianMultivariate(distribution=distribution)
+        copula.fit(df)
+        copula.correlation = np.eye(num_vars)
+        copula.mean = np.zeros(num_vars)  # Mean vector set to zero
+    elif copula_type == "GaussianMultivariate":
+        copula = GaussianMultivariate(distribution=distribution)
+        copula.fit(df)
+    else:
+        raise ValueError(f"Unknown copula type: {copula_type}")
     return copula
 
 def save_copula_binary(file_name, block_copulas, dims, marginal_types_map):
@@ -163,8 +172,8 @@ def save_copula_binary(file_name, block_copulas, dims, marginal_types_map):
 # 7. FULL PIPELINE EXAMPLE
 ###############################################################################
 if __name__ == "__main__":
-    
-    from .params import file_paths, marginal_distributions, block_size
+
+    from .params import file_paths, marginal_distributions, block_size, copula_type
     from ..marginals_map import marginal_types_map
     
     # Read all VTI files. All files are assumed to share the same dims, spacing, and origin.
@@ -181,7 +190,7 @@ if __name__ == "__main__":
         # For each variable, extract the corresponding block.
         block_vars = {var: arr[i0:i0+block_size, j0:j0+block_size, k0:k0+block_size] 
                       for var, arr in arrays.items()}
-        copula = create_copula_model_multivariable(block_vars, i0, j0, k0, marginal_distributions)
+        copula = create_copula_model_multivariable(block_vars, i0, j0, k0, marginal_distributions, copula_type)
         block_copulas.append((copula, i0, j0, k0, block_size))
     print("Fitted copula models for", len(block_copulas), "blocks.")
 
@@ -192,6 +201,6 @@ if __name__ == "__main__":
     dist_names = [marginal_distributions[key].__name__ for key in file_paths.keys()]
             
     # save_copula_binary("copula_models/model_.bin", block_copulas, dims, marginal_types_map)
-    save_copula_binary("copula_models/model_" + "_".join(var_names) + "_" + dist_names[-1] + ".bin", block_copulas, dims, marginal_types_map)
+    save_copula_binary("copula_models/model_" + "_".join(var_names) + "_" + dist_names[-1] + "_"+str(block_size)+".bin", block_copulas, dims, marginal_types_map)
     
    
