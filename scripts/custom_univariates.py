@@ -93,3 +93,19 @@ class Histogram(ScipyModel):
         self.check_fit()
         bin_edges = self._params['histogram']._histogram[1]
         return len(bin_edges) == 2 and np.isclose(bin_edges[1] - bin_edges[0], 1e-6)
+    
+    def _extract_constant(self):
+        """
+        Extract the constant value if the data used to fit the model is constant.
+
+        Returns:
+            float: The constant value if the data is constant.
+
+        Raises:
+            ValueError: If the data is not constant.
+        """
+        if self._is_constant():
+            bin_edges = self._params['histogram']._histogram[1]
+            return bin_edges[0]
+        else:
+            raise ValueError("The data is not constant.")
