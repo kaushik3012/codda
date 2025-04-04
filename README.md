@@ -1,4 +1,4 @@
-# Copula Project README
+# CoDDA
 
 This document outlines how to run the various scripts in the project and details all available parameters for each script.
 
