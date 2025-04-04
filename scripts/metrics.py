@@ -2,9 +2,7 @@ import argparse
 import numpy as np
 from .compress.utils import read_vti_file
 import os
-import json
 import csv
-import pickle
 
 # Calculate SNR and NRMSE between the original and reconstructed data
 def calculate_metrics(original_data, reconstructed_data):

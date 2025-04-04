@@ -5,7 +5,6 @@ import pandas as pd
 from copulas.multivariate import GaussianMultivariate
 from ..custom_models.gmc import GaussianMixtureCopula
 from copulas.univariate import TruncatedGaussian, UniformUnivariate
-from sklearn.mixture import GaussianMixture
 import struct
 import os
 from .utils import read_vti_files
