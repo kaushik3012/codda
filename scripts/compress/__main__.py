@@ -3,7 +3,7 @@ from math import dist
 import numpy as np
 import pandas as pd
 from copulas.multivariate import GaussianMultivariate
-from ..custom_univariates.gmc import GaussianMixtureCopula
+from ..custom_models.gmc import GaussianMixtureCopula
 from copulas.univariate import TruncatedGaussian, UniformUnivariate
 from sklearn.mixture import GaussianMixture
 import struct

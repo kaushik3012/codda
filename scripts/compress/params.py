@@ -1,5 +1,5 @@
 from copulas.univariate import TruncatedGaussian, UniformUnivariate, BetaUnivariate, GaussianKDE,GaussianUnivariate, GammaUnivariate, LogLaplace, StudentTUnivariate
-from ..custom_univariates.histogram import Histogram
+from ..custom_models.histogram import Histogram
 
 file_paths = {
     "P": "Isabel_data_all_variables_vti/Pf25.binLE.raw_corrected_2_subsampled.vti",

@@ -156,7 +156,7 @@ def load_univariates(f, var_names):
             bin_densities = bin_densities / np.sum(bin_densities)
             bin_edges = bin_edges.tolist()
             params['histogram'] = rv_histogram((bin_densities, bin_edges), density=True)
-            params["type"] = "scripts.custom_univariates.histogram.Histogram"
+            params["type"] = "scripts.custom_models.histogram.Histogram"
         else:
             if marginal_type == "TruncatedGaussian":
                 keys = ["a", "b", "loc", "scale"]
@@ -249,7 +249,7 @@ def load_GMC_binary(f, var_names):
         # Read marginal distributions
         copula_params["univariates"] = load_univariates(f, var_names)
         copula_params["columns"] = var_names + ["x", "y", "z"]
-        copula_params["type"] = "scripts.custom_univariates.gmc.GaussianMixtureCopula"
+        copula_params["type"] = "scripts.custom_models.gmc.GaussianMixtureCopula"
         copula_structures.append(copula_params)
     return copula_structures
 
