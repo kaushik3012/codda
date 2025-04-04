@@ -1,6 +1,5 @@
-from copulas.multivariate import GaussianMultivariate
 from copulas.univariate import TruncatedGaussian, UniformUnivariate, BetaUnivariate, GaussianKDE,GaussianUnivariate, GammaUnivariate, LogLaplace, StudentTUnivariate
-from ..custom_univariates import Histogram
+from ..custom_univariates.histogram import Histogram
 
 file_paths = {
     "P": "Isabel_data_all_variables_vti/Pf25.binLE.raw_corrected_2_subsampled.vti",
@@ -23,25 +22,25 @@ file_paths = {
 # (B) Specify marginal distributions for each variable.
 # You can change these to other univariate distributions if desired.
 marginal_distributions = {
-    "P": StudentTUnivariate,  
-    "TC": StudentTUnivariate,
-    "Velocity": StudentTUnivariate,
-    "CLOUD": StudentTUnivariate,
-    "PRECIP": StudentTUnivariate,
-    "QCLOUD": StudentTUnivariate,
-    "QGRAUP": StudentTUnivariate,
-    "QICE": StudentTUnivariate,
-    "QRAIN": StudentTUnivariate,
-    "QSNOW": StudentTUnivariate,
-    "QVAPOR": StudentTUnivariate,
-    "U": StudentTUnivariate,
-    "V": StudentTUnivariate,
-    "W": StudentTUnivariate,
+    "P": Histogram,  
+    "TC": Histogram,
+    "Velocity": Histogram,
+    "CLOUD": Histogram,
+    "PRECIP": Histogram,
+    "QCLOUD": Histogram,
+    "QGRAUP": Histogram,
+    "QICE": Histogram,
+    "QRAIN": Histogram,
+    "QSNOW": Histogram,
+    "QVAPOR": Histogram,
+    "U": Histogram,
+    "V": Histogram,
+    "W": Histogram,
     "x": UniformUnivariate,
     "y": UniformUnivariate,
     "z": UniformUnivariate
 }
 
-block_size = 10
+block_size = 5
 
-copula_type = "GaussianMultivariate"  # or "IndependentMultivariate"
+copula_type = "GaussianMixtureCopula"  # "GaussianMultivariate" or "IndependentMultivariate" or "GaussianMixtureCopula"

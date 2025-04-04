@@ -2,6 +2,9 @@ import argparse
 import numpy as np
 from .compress.utils import read_vti_file
 import os
+import json
+import csv
+import pickle
 
 # Calculate SNR and NRMSE between the original and reconstructed data
 def calculate_metrics(original_data, reconstructed_data):
@@ -46,3 +49,22 @@ if __name__ == "__main__":
     print(f"{'Compression Ratio':<20} {original_size / model_size:.2f}")
     print("-" * 30)
     print("Metrics calculated successfully.")
+    
+    # Prepare metrics data dictionary
+    metrics = {
+        "SNR (dB)": round(snr, 2),
+        "NRMSE": round(nrmse, 4),
+        "Original Size (MB)": round(original_size / (1024 * 1024), 2),
+        "Reconstructed Size (MB)": round(reconstructed_size / (1024 * 1024), 2),
+        "Model Size (MB)": round(model_size / (1024 * 1024), 2),
+        "Compression Ratio": round(original_size / model_size, 2)
+    }
+    
+    # Save metrics to CSV file
+    with open("metrics.csv", "w", newline='') as csv_file:
+        writer = csv.writer(csv_file)
+        writer.writerow(["Metric", "Value"])
+        for key, value in metrics.items():
+            writer.writerow([key, value])
+    
+    print("Metrics saved to metrics.csv")

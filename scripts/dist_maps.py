@@ -10,3 +10,10 @@ marginal_types_map = {
     "LogLaplace": 7,
     "StudentTUnivariate": 8,
 }
+
+# Define a mapping for copula types to integer enums
+copula_types_map = {
+    "GaussianMultivariate": 0,
+    "IndependentMultivariate": 1,
+    "GaussianMixtureCopula": 2,
+}
